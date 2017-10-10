@@ -6,11 +6,12 @@ import csv  # CSV module to manipulate CSV files (Comma Seperated Values)
 
 def load_friends():
     with open('friends_data.csv', 'rb') as friends_data:
-        reader = csv.read(friends_data)
+        reader = csv.reader(friends_data)
 
         for row in reader:
             spy = Spy(row[0], row[1], row[2], row[3])
             friends.append(spy)
+
 
 
 STATUS_MESSAGES = ['My name is Bond, James Bond', 'Shaken, not stirred.']  # List of status messages
@@ -63,7 +64,7 @@ def add_friend():
 
     if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating >= 1:
         try:
-            with open("friends.csv", 'ab') as friends_data:
+            with open("friends_data.csv", 'ab') as friends_data:
                 write = csv.writer(friends_data)
                 write.writerow([new_friend.name, new_friend.salutation, new_friend.age, new_friend.rating])
         except:
@@ -84,10 +85,11 @@ def select_friend():
     item_number = 0
     # to traverse friends list
     for friend in friends:
-        print '%d. %s' % ((item_number + 1), friend['name'])
+        print '%d. %s' % ((item_number + 1), friend.name)
         item_number = item_number + 1
 
-    friend_choice = input("Choose from your friends")
+
+    friend_choice = input("Choose from your friends: ")
     return friend_choice - 1
 
 
@@ -104,7 +106,7 @@ def send_message():
     # split text message to check any special message involved or not
     message = text.split(' ')
     # If a Smart send a message with special words such as SOS, SAVE ME etc. you should display an appropriate message
-    cases = ['SOS', 'Help', 'HELP', 'SoS', 'ASAP', 'asap']
+    cases = ['SOS', 'Help', 'HELP', 'SoS', 'sos', 'ASAP', 'asap', 'save me', 'SAVE ME']
     for any in cases:
         if any in message:
             print "Immediate action required"
@@ -131,6 +133,7 @@ def read_message():
 print ("Welcome to spy chat, " + spy.name)
 
 question = raw_input("Continue as " + spy.salutation + " " + spy.name + "(Y/N)? : ")  # spy['name'] - it is a dictonary
+load_friends()
 
 
 # startchat function to start a chat with attributes of paricular spy
@@ -139,8 +142,7 @@ def start_chat(spy_name, spy_age, spy_rating):
     current_status_message = None
 
     while show_menu:
-        menu_choice = int(raw_input(
-            "What do you want to do? \n1. Add a status update \n2. Add a friend\n3. Select a friend\n4. Send Message\n5. Read Message\n6. Close Application\n"))
+        menu_choice = int(raw_input("What do you want to do? \n1. Add a status update \n2. Add a friend\n3. Select a friend\n4. Send Message\n5. Read Message\n6. Close Application\n"))
 
         if menu_choice == 1:
             current_status_message = add_status(current_status_message)
@@ -178,9 +180,9 @@ if question.lower() == "n":
         new_user.rating = float(raw_input("What is your rating?"))  # rating for new user
         if 4.5 < new_user.rating:
             print 'Great ace!'
-        elif new_user.rating > 3.5 and new_user.rating <= 4.5:
+        elif 3.5 < new_user.rating <= 4.5:
             print 'You are one of the good ones.'
-        elif new_user.rating >= 2.5 and new_user.rating <= 3.5:
+        elif 2.5 <= new_user.rating <= 3.5:
             print 'You can always do better'
         else:
             print 'We can always use somebody to help in the office.'
